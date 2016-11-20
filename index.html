@@ -1,0 +1,101 @@
+<html>
+    <head>
+        <title>Insulin Engine (Test Harness)</title>
+
+    <script
+        type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.0.8/vue.min.js">
+    </script>
+    <style type="text/css">
+.input-group {
+    display:block;
+}
+    </style>
+
+    </head>
+    <body>
+        <div id="vueroot" style="display: none">
+            <div id="app-container">
+                <div id="plrInsulinInfo">
+                    <div id="plr-blood-glucose" style="display:block">
+                        <em>Player Blood Glucose: </em>
+                        {{bloodGlucose}}
+                    </div>
+                    <div id="plr-insulin-ratio" style="display:block">
+                        <em>Player Insulin Ratio: </em>
+                        {{insulinRatio}}
+                    </div>
+                    <div id="plr-correct-ratio" style="display:block">
+                        <em>Player Correct Insulin Ratio: </em>
+                        {{correctRatio}}
+                    </div>
+                </div>
+                <hr />
+                <div id="plrInsulinControls">
+                    <em>Eat food</em>
+                    <div class="input-group">
+                        <select id="food-type" v-model.number="foodValue">
+                            <option value="1">Bread</option>
+                            <option value="2">Watermelon</option>
+                            <option value="3">Cookie</option>
+                        </select>
+                        <input type="number" id="food-units" value="1" min="1" max="5" 
+                        step="1" v-model.number="foodUnits" />
+                        <button id="eat-food" v-on:click="eatFood">Eat</button>
+                    </div>
+                    <hr />
+                    <em>Take Insulin</em>
+                    <div class="input-group">
+                        <input type="number" v-model.number="insulinUnits" id="insulin-units"
+                        value="1" min="0" max="100" step="1" />
+                        <button id="take-insulin">Take</button>
+
+                    </div>
+                </div>
+                <br /><br />
+                <div id="feedback" style="min-height:80px;border: 3px solid #00FF00;">
+                    {{feedbackMessage}}
+                </div>
+            </div>
+        </div>
+        <div id="app">
+            
+        </div>
+<script type="text/javascript">
+"use strict";
+var vue = new Vue({
+    el: "#app",
+    template: "#vueroot",
+    data: function(){
+        return {
+            bloodGlucose: 0,
+            insulinRatio: 2,
+            correctRatio: 2,
+            foodValue: 0,
+            foodUnits: 1,
+            insulinUnits: 1,
+            insulinUnitsInSystem: 0,
+            feedbackMessage: ""
+        }
+    },
+    created: function(){
+        console.log("created");
+    },
+    methods: {
+        eatFood: function(){
+            if(this.insulinUnitsInSystem === 0)
+            {
+                this.feedbackMessage = "Eating the food had no affect";
+            }
+        },
+        takeInsulin: function(){
+            console.log("beam me up scotty");
+        }
+    }
+});
+</script>
+    </body>
+
+    </head>
+    <body>
+</html>
