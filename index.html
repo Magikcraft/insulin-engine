@@ -114,10 +114,27 @@ var vue = new Vue({
   methods: {
     eatFood: function(){
       this.carbsInSystem += this.foodValue;
-
+      this.updateSymptoms();
     },
     takeInsulin: function(){
       this.insulinUnitsInSystem += this.insulinUnits;
+      this.updateSymptoms();
+    },
+    updateSymptoms: function(){
+
+      // increase bgl
+      this.bloodGlucose += (
+          this.carbsInSystem * 0.25
+        );
+      this.carbsInSystem = 0;
+
+      // decrease bgl by amount of insulin in system
+      this.bloodGlucose -= (
+          (this.insulinUnitsInSystem * (this.carbsReferenceUnit * 0.25))
+        )
+      this.insulinUnitsInSystem = 0;
+
+      this.feedbackMessage += " Updated simple model. \n";
     },
     clearFeedback: function(){
       this.feedbackMessage = "";
