@@ -146,11 +146,10 @@ var vue = new Vue({
         this.insulinUnitsInSystem += Math.abs(this.bloodGlucose/this.configCarbsReferenceUnit);
         this.bloodGlucose = 0;
       }
-
-      
-
+      //finished making changes to player t1 stats
       this.feedbackMessage += " Updated simple model. \n";
 
+      //what does this mean for player health / side effects
       this.applySideEffects();
     },
     applySideEffects: function(){
