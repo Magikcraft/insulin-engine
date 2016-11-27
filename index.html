@@ -82,7 +82,9 @@ em {
         <hr />
         <h3>App Config</h3>
         <div id="app-config">
-          Player can eat <input type="number" name="carbs-reference-unit" v-model="carbsReferenceUnit" /> for each 1 unit of insulin taken.
+          Player can eat <input type="number" name="carbs-reference-unit" size="5" maxlength="5" v-model="configCarbsReferenceUnit" /> for each 1 unit of insulin taken.<br />
+          Player can have a minimum safe BGL of <input type="number" size="5" maxlength="5" name="min-safe-bgl" v-model="configMinSafeBGL" /> bgl units. <br />
+          Player can have a maximum safe BGL of <input type="number" size="5" maxlength="5" name="max-safe-bgl" v-model="configMaxSafeBGL" /> bgl units
         </div>
       </div>
     </div>
@@ -96,8 +98,10 @@ var vue = new Vue({
   template: "#vueroot",
   data: function(){
     return {
+      configCarbsReferenceUnit: 15,
+      configMinSafeBGL: 3,
+      configMaxSafeBGL: 25,
       bloodGlucose: 6,
-      carbsReferenceUnit: 15,
       foodValue: 0,
       foodUnits: 1,
       insulinUnits: 1,
@@ -114,13 +118,13 @@ var vue = new Vue({
   methods: {
     eatFood: function(){
       this.carbsInSystem += this.foodValue;
-      this.updateSymptoms();
+      this.updateSimpleModel();
     },
     takeInsulin: function(){
       this.insulinUnitsInSystem += this.insulinUnits;
-      this.updateSymptoms();
+      this.updateSimpleModel();
     },
-    updateSymptoms: function(){
+    updateSimpleModel: function(){
 
       // increase bgl
       this.bloodGlucose += (
@@ -129,12 +133,33 @@ var vue = new Vue({
       this.carbsInSystem = 0;
 
       // decrease bgl by amount of insulin in system
+      
       this.bloodGlucose -= (
-          (this.insulinUnitsInSystem * (this.carbsReferenceUnit * 0.25))
-        )
+          (this.insulinUnitsInSystem * (this.configCarbsReferenceUnit * 0.25))
+      )
       this.insulinUnitsInSystem = 0;
 
+      // we can't have negative blood glucose, it is really just unused (excess) insulin
+      // update insulin & blood glucose to show this
+      if(this.bloodGlucose < 0){
+        // set unused insulin
+        this.insulinUnitsInSystem += Math.abs(this.bloodGlucose/this.configCarbsReferenceUnit);
+        this.bloodGlucose = 0;
+      }
+
+      
+
       this.feedbackMessage += " Updated simple model. \n";
+
+      this.applySideEffects();
+    },
+    applySideEffects: function(){
+      if(this.bloodGlucose < 3){
+        this.feedbackMessage += "\t My BGL is too low (< "+this.configMinSafeBGL+") (too much insulin), i show symptoms like: shaky, incoherence, coma death\n";
+      }
+      if(this.bloodGlucose > 25){
+        this.feedbackMessage += "\t My BGL is extremely high (> "+ this.configMaxSafeBGL+") too many carbs!, it causes damage to my player health\n";
+      }
     },
     clearFeedback: function(){
       this.feedbackMessage = "";
