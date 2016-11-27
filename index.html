@@ -1,101 +1,129 @@
 <html>
-    <head>
-        <title>Insulin Engine (Test Harness)</title>
-
-    <script
-        type="text/javascript"
-        src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.0.8/vue.min.js">
-    </script>
-    <style type="text/css">
+<head>
+<title>Insulin Engine (Test Harness)</title>
+<script
+type="text/javascript"
+src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.0.8/vue.min.js">
+</script>
+<style type="text/css">
 .input-group {
-    display:block;
+display:block;
 }
-    </style>
+em {
+  font-weight: bold;
+  font-style: normal;
+}
+</style>
 
-    </head>
-    <body>
-        <div id="vueroot" style="display: none">
-            <div id="app-container">
-                <div id="plrInsulinInfo">
-                    <div id="plr-blood-glucose" style="display:block">
-                        <em>Player Blood Glucose: </em>
-                        {{bloodGlucose}}
-                    </div>
-                    <div id="plr-insulin-ratio" style="display:block">
-                        <em>Player Insulin Ratio: </em>
-                        {{insulinRatio}}
-                    </div>
-                    <div id="plr-correct-ratio" style="display:block">
-                        <em>Player Correct Insulin Ratio: </em>
-                        {{correctRatio}}
-                    </div>
-                </div>
-                <hr />
-                <div id="plrInsulinControls">
-                    <em>Eat food</em>
-                    <div class="input-group">
-                        <select id="food-type" v-model.number="foodValue">
-                            <option value="1">Bread</option>
-                            <option value="2">Watermelon</option>
-                            <option value="3">Cookie</option>
-                        </select>
-                        <input type="number" id="food-units" value="1" min="1" max="5" 
-                        step="1" v-model.number="foodUnits" />
-                        <button id="eat-food" v-on:click="eatFood">Eat</button>
-                    </div>
-                    <hr />
-                    <em>Take Insulin</em>
-                    <div class="input-group">
-                        <input type="number" v-model.number="insulinUnits" id="insulin-units"
-                        value="1" min="0" max="100" step="1" />
-                        <button id="take-insulin">Take</button>
+</head>
+  <body>
+    <div id="vueroot" style="display: none">
+      <div id="app-container">
+        <div id="plrInsulinInfo">
+          <div id="plr-blood-glucose" style="display:block">
+            <em>Player Blood Glucose: </em>
+            {{bloodGlucose}}
+          </div>
+          <div id="plr-hearts-value" style="display: block;">
+            <em>Player hearts: </em>
+            {{playerHeartsValue}}/{{playerHeartsMax}}
+          </div>
+          <div id="plr-insulin" style="display: block;">
+            <em>Player Insulin: </em>
+            {{insulinUnitsInSystem}}
+          </div>
+          <div id="plr-carbs" style="display: block;">
+            <em>Player Carbs: </em>
+            {{carbsInSystem}}
+          </div>
+        </div>
 
-                    </div>
-                </div>
-                <br /><br />
-                <div id="feedback" style="min-height:80px;border: 3px solid #00FF00;">
-                    {{feedbackMessage}}
-                </div>
-            </div>
+        <hr />
+        
+        <div id="plrInsulinControls">
+          
+          <em>Eat food</em>
+          <div class="input-group">
+            <select id="food-type" v-model.number="foodValue">
+              <option value="15">Bread 15 carbs</option>
+              <option value="30">Watermelon 30 carbs</option>
+              <option value="45">Cookie 45 carbs</option>
+            </select>
+            <input 
+              type="number" id="food-units" 
+              value="1" min="1" max="5" 
+              step="1" v-model.number="foodUnits"
+            />
+            <button id="eat-food" v-on:click="eatFood">Eat</button>
+          </div>
+
+          <hr />
+          
+          <em>Take Insulin</em>
+          <div class="input-group">
+            <input type="number" v-model.number="insulinUnits" id="insulin-units"
+            value="1" min="0" max="100" step="1" />
+            <button id="take-insulin" v-on:click="takeInsulin">Take</button>
+          </div>
+        
         </div>
-        <div id="app">
-            
+        <br />
+        <div id="feedback">
+          <textarea v-model="feedbackMessage" 
+            cols=50 rows=2 
+            id="feedback" disabled="disabled"
+            style="display: block; background-color: #FFF;border: none;"
+          >
+          </textarea>
+          <button id="feedback-clear" v-on:click="clearFeedback">
+            Clear Feedback
+          </button>
+        </div> 
+        <hr />
+        <h3>App Config</h3>
+        <div id="app-config">
+          Player can eat <input type="number" name="carbs-reference-unit" v-model="carbsReferenceUnit" /> for each 1 unit of insulin taken.
         </div>
-<script type="text/javascript">
+      </div>
+    </div>
+    <div id="app">
+
+    </div>
+ <script type="text/javascript">
 "use strict";
 var vue = new Vue({
-    el: "#app",
-    template: "#vueroot",
-    data: function(){
-        return {
-            bloodGlucose: 0,
-            insulinRatio: 2,
-            correctRatio: 2,
-            foodValue: 0,
-            foodUnits: 1,
-            insulinUnits: 1,
-            insulinUnitsInSystem: 0,
-            feedbackMessage: ""
-        }
-    },
-    created: function(){
-        console.log("created");
-    },
-    methods: {
-        eatFood: function(){
-            if(this.insulinUnitsInSystem === 0)
-            {
-                this.feedbackMessage = "Eating the food had no affect";
-            }
-        },
-        takeInsulin: function(){
-            console.log("beam me up scotty");
-        }
+  el: "#app",
+  template: "#vueroot",
+  data: function(){
+    return {
+      bloodGlucose: 6,
+      carbsReferenceUnit: 15,
+      foodValue: 0,
+      foodUnits: 1,
+      insulinUnits: 1,
+      insulinUnitsInSystem: 0,
+      carbsInSystem: 0,
+      feedbackMessage: "",
+      playerHeartsValue: 10,
+      playerHeartsMax: 10,
     }
-});
-</script>
-    </body>
+  },
+  created: function(){
+    console.log("created");
+  },
+  methods: {
+    eatFood: function(){
+      this.carbsInSystem += this.foodValue;
 
-    </head>
-    <body>
+    },
+    takeInsulin: function(){
+      this.insulinUnitsInSystem += this.insulinUnits;
+    },
+    clearFeedback: function(){
+      this.feedbackMessage = "";
+    }
+  }
+});
+    </script>
+  </body>
 </html>
