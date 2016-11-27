@@ -143,7 +143,7 @@ var vue = new Vue({
       // update insulin & blood glucose to show this
       if(this.bloodGlucose < 0){
         // set unused insulin
-        this.insulinUnitsInSystem += Math.abs(this.bloodGlucose/this.configCarbsReferenceUnit);
+        this.insulinUnitsInSystem += Math.abs(this.bloodGlucose/(this.configCarbsReferenceUnit*0.25));
         this.bloodGlucose = 0;
       }
       //finished making changes to player t1 stats
