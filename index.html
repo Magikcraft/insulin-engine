@@ -117,7 +117,7 @@ var vue = new Vue({
   },
   methods: {
     eatFood: function(){
-      this.carbsInSystem += this.foodValue;
+      this.carbsInSystem += this.foodValue * this.foodUnits;
       this.updateSimpleModel();
     },
     takeInsulin: function(){
