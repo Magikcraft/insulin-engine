@@ -153,11 +153,11 @@ var vue = new Vue({
       this.applySideEffects();
     },
     applySideEffects: function(){
-      if(this.bloodGlucose < 3){
-        this.feedbackMessage += "\t My BGL is too low (< "+this.configMinSafeBGL+") (too much insulin), i show symptoms like: shaky, incoherence, coma death\n";
+      if(this.bloodGlucose < this.configMinSafeBGL){
+        this.feedbackMessage += "\t My BGL is too low (< "+this.configMinSafeBGL+") (too much insulin), I show symptoms like: shaky, incoherence, coma, death\n";
       }
-      if(this.bloodGlucose > 25){
-        this.feedbackMessage += "\t My BGL is extremely high (> "+ this.configMaxSafeBGL+") too many carbs!, it causes damage to my player health\n";
+      if(this.bloodGlucose > this.configMaxSafeBGL){
+        this.feedbackMessage += "\t My BGL is high (> "+ this.configMaxSafeBGL+") too many carbs, not enough insulin! It causes damage to my player health\n";
       }
     },
     clearFeedback: function(){
