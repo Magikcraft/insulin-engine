@@ -70,7 +70,7 @@ em {
         <br />
         <div id="feedback">
           <textarea v-model="feedbackMessage" 
-            cols=50 rows=2 
+            cols=120 rows=10 
             id="feedback" disabled="disabled"
             style="display: block; background-color: #FFF;border: none;"
           >
@@ -99,8 +99,9 @@ var vue = new Vue({
   data: function(){
     return {
       configCarbsReferenceUnit: 15,
-      configMinSafeBGL: 3,
-      configMaxSafeBGL: 25,
+      configMinSafeBGL: 4,
+      configMaxSafeBGL: 8,
+      configCriticalHighBGL: 20,
       bloodGlucose: 6,
       foodValue: 0,
       foodUnits: 1,
@@ -118,14 +119,15 @@ var vue = new Vue({
   methods: {
     eatFood: function(){
       this.carbsInSystem += this.foodValue * this.foodUnits;
-      this.updateSimpleModel();
+      this.updateSimpleModel("/t1 eat carbs " + this.carbsInSystem + "g\n");
     },
     takeInsulin: function(){
       this.insulinUnitsInSystem += this.insulinUnits;
-      this.updateSimpleModel();
+      this.updateSimpleModel("/t1 take insulin " + this.insulinUnits + "\n");
     },
-    updateSimpleModel: function(){
+    updateSimpleModel: function(msg){
 
+      if (msg) this.feedbackMessage += msg;
       // increase bgl
       this.bloodGlucose += (
           this.carbsInSystem * 0.25
@@ -147,17 +149,22 @@ var vue = new Vue({
         this.bloodGlucose = 0;
       }
       //finished making changes to player t1 stats
-      this.feedbackMessage += " Updated simple model. \n";
 
       //what does this mean for player health / side effects
       this.applySideEffects();
     },
     applySideEffects: function(){
-      if(this.bloodGlucose < 3){
-        this.feedbackMessage += "\t My BGL is too low (< "+this.configMinSafeBGL+") (too much insulin), i show symptoms like: shaky, incoherence, coma death\n";
+      if(this.bloodGlucose < this.configMinSafeBGL){
+        if (this.bloodGlucose < 2) {
+          this.feedbackMessage += "Hypoglycemic shock. My player dies without immediate emergency medical intervention."
+        } else
+        this.feedbackMessage += "Hypoglycemia. My BGL is too low (< "+this.configMinSafeBGL+") (too much insulin)! I show symptoms like: shaky, incoherence, coma\n";
       }
-      if(this.bloodGlucose > 25){
-        this.feedbackMessage += "\t My BGL is extremely high (> "+ this.configMaxSafeBGL+") too many carbs!, it causes damage to my player health\n";
+      if(this.bloodGlucose > this.configMaxSafeBGL){
+        if (this.bloodGlucose > this.configCriticalHighBGL) {
+          this.feedbackMessage += "Diabetic Ketoacidosis Attack (DKA). Without medical intervention my player loses consciousness and will die."
+        } else
+        this.feedbackMessage += "Hyperglycemia. My BGL is too high (> "+ this.configMaxSafeBGL+") not enough insulin! It causes damage to my player health\n";
       }
     },
     clearFeedback: function(){
