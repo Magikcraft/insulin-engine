@@ -7,7 +7,7 @@ This engine integrates with a Minecraft plugin to provide a Virtual Reality expe
 
 Project adviser [Scott Hanselman](http://www.hanselman.com/) is a software developer, Type 1 Diabetic, and activist. In this video Scott describes what it is like to like with Type 1 Diabetes:
 
-[![Scott Hanselman on Type 1 Diabetes](https://img.youtube.com/vi/jsxFbDIvQRw/0.jpg)](https://www.youtube.com/watch?v=jsxFbDIvQRw)
+[![Scott Hanselman on Type 1 Diabetes](https://img.youtube.com/vi/jsxFbDIvQRw/0.jpg)](https://www.youtube.com/watch?v=jsxFbDIvQRw target="_blank")
 
 If you are a parent of a child diagnosed with Type 1 Diabetes in Queensland, join the [TOPIQ (Type One Parents In Queensland) Facebook group](https://www.facebook.com/groups/TOPIQ/) for a supportive community.
 
