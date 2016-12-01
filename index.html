@@ -13,6 +13,24 @@ em {
   font-weight: bold;
   font-style: normal;
 }
+.feedback-item {
+  display: block;
+  padding: 0.2em;
+  margin:0.2em;
+  margin-top:0.4em;
+  font-family: 'Droid-Sans-Mono', 'Courier';
+  font-size:12pt;
+  color:white;
+}
+.feedback-item:hover {
+  color: #00FF00;
+  background-color: #000;
+}
+#feedback {
+  max-height: 20em;
+  overflow-y: scroll;
+  background-color: #2a2a2a;
+}
 </style>
 
 </head>
@@ -45,7 +63,7 @@ em {
           <em>Eat food</em>
           <div class="input-group">
             <select id="food-type" v-model.number="foodValue">
-              <option value="15">Bread 15 carbs</option>
+              <option value="15" selected="true">Bread 15 carbs</option>
               <option value="30">Watermelon 30 carbs</option>
               <option value="45">Cookie 45 carbs</option>
             </select>
@@ -69,14 +87,11 @@ em {
         </div>
         <br />
         <div id="feedback">
-          <textarea v-model="feedbackMessage" 
-            cols=120 rows=10 
-            id="feedback" disabled="disabled"
-            style="display: block; background-color: #FFF;border: none;"
-          >
-          </textarea>
+          <div v-for="item in feedbackMessages" class="feedback-item">
+            $> {{item}}
+          </div>
           <button id="feedback-clear" v-on:click="clearFeedback">
-            Clear Feedback
+            Clear feed back
           </button>
         </div> 
         <hr />
@@ -92,6 +107,11 @@ em {
 
     </div>
  <script type="text/javascript">
+var dummyCarbsMap ={
+  "15" : "Bread",
+  "30" : "Watermelon",
+  "45" : "Cookie"
+}
 "use strict";
 var vue = new Vue({
   el: "#app",
@@ -103,12 +123,12 @@ var vue = new Vue({
       configMaxSafeBGL: 8,
       configCriticalHighBGL: 20,
       bloodGlucose: 6,
-      foodValue: 0,
+      foodValue: 15,
       foodUnits: 1,
       insulinUnits: 1,
       insulinUnitsInSystem: 0,
       carbsInSystem: 0,
-      feedbackMessage: "",
+      feedbackMessages: [],
       playerHeartsValue: 10,
       playerHeartsMax: 10,
     }
@@ -119,56 +139,100 @@ var vue = new Vue({
   methods: {
     eatFood: function(){
       this.carbsInSystem += this.foodValue * this.foodUnits;
-      this.updateSimpleModel("/t1 eat carbs " + this.carbsInSystem + "g\n");
+      this.feedbackMessages.push(
+        "CMD RUN: /t1 eat " + this.foodUnits + " " + dummyCarbsMap[this.foodValue.toString()] 
+        );
+      this.feedbackMessages.push(
+        "USR MSG: you ate " + this.foodUnits + " pieces of " + dummyCarbsMap[this.foodValue.toString()]
+        );
+
+      this.updateSimpleModel();
     },
     takeInsulin: function(){
       this.insulinUnitsInSystem += this.insulinUnits;
-      this.updateSimpleModel("/t1 take insulin " + this.insulinUnits + "\n");
-    },
-    updateSimpleModel: function(msg){
+      this.feedbackMessages.push("CMD RUN: /t1 take " + this.insulinUnits + " insulin");
+      
+      this.feedbackMessages.push(
+        "USR MSG: you took " + this.insulinUnits + " units of insulin"
+        );
 
-      if (msg) this.feedbackMessage += msg;
+
+
+
+      this.updateSimpleModel();
+    },
+    updateSimpleModel: function(){
       // increase bgl
+      msg_bgl_changes = "USR MSG: Your stomach digests " + this.carbsInSystem;
       this.bloodGlucose += (
           this.carbsInSystem * 0.25
         );
+      if(this.carbsInSystem > 0)
+        this.feedbackMessages.push(
+            msg_bgl_changes + " which raises you blood glucose level to " + this.bloodGlucose
+          );
+        this.feedbackMessages.push(
+            "USR MSG: The equation was: BGL = BGL + (carbs in system * 0.25)" 
+          );
       this.carbsInSystem = 0;
 
-      // decrease bgl by amount of insulin in system
+
+      // decrease bgl by amount of insulin in system, to a maximum of zero
       
-      this.bloodGlucose -= (
-          (this.insulinUnitsInSystem * (this.configCarbsReferenceUnit * 0.25))
-      )
-      this.insulinUnitsInSystem = 0;
+      var toAbsorb = this.insulinUnitsInSystem * this.bglReferenceUnit();
+
+      toAbsorbDiffBGL = this.bloodGlucose - toAbsorb;
+      actualAbsorbedInsulin = 0;
+
+      if(toAbsorbDiffBGL < 0){
+        actualAbsorbedInsulin 
+          = this.insulinUnitsInSystem - Math.abs(toAbsorbDiffBGL/this.bglReferenceUnit());
+      }else{     
+        actualAbsorbedInsulin = this.insulinUnitsInSystem;
+      }
+      this.bloodGlucose -= actualAbsorbedInsulin * this.bglReferenceUnit();
+
+      this.insulinUnitsInSystem -= actualAbsorbedInsulin;
+
+      if(actualAbsorbedInsulin > 0){
+        this.feedbackMessages.push(
+             "USR MSG: " + actualAbsorbedInsulin + " units of insulin were used to process your blood glucose"
+          );
+        this.feedbackMessages.push("USR MSG: You gained health");
+      }else {
+        this.feedbackMessages.push("USR MSG: No blood glucose was processed into health.");
+      }
+
+      this.feedbackMessages.push(
+        "USR MSG: You have " + this.insulinUnitsInSystem +" insulin in your system"
+      );
+
+
+      
 
       // we can't have negative blood glucose, it is really just unused (excess) insulin
       // update insulin & blood glucose to show this
-      if(this.bloodGlucose < 0){
-        // set unused insulin
-        this.insulinUnitsInSystem += Math.abs(this.bloodGlucose/(this.configCarbsReferenceUnit*0.25));
-        this.bloodGlucose = 0;
-      }
-      //finished making changes to player t1 stats
 
+      //finished making changes to player t1 stats
       //what does this mean for player health / side effects
       this.applySideEffects();
     },
+    bglReferenceUnit: function(){
+      return this.configCarbsReferenceUnit * 0.25;
+    },
     applySideEffects: function(){
       if(this.bloodGlucose < this.configMinSafeBGL){
-        if (this.bloodGlucose < 2) {
-          this.feedbackMessage += "Hypoglycemic shock. My player dies without immediate emergency medical intervention."
-        } else
-        this.feedbackMessage += "Hypoglycemia. My BGL is too low (< "+this.configMinSafeBGL+") (too much insulin)! I show symptoms like: shaky, incoherence, coma\n";
+        this.feedbackMessages.push("USR MSG: Hypoglycemic shock. My player dies without immediate emergency medical intervention.")
       }
       if(this.bloodGlucose > this.configMaxSafeBGL){
         if (this.bloodGlucose > this.configCriticalHighBGL) {
-          this.feedbackMessage += "Diabetic Ketoacidosis Attack (DKA). Without medical intervention my player loses consciousness and will die."
+          this.feedbackMessages.push("USR MSG: Diabetic Ketoacidosis Attack (DKA). Without medical intervention my player loses consciousness and will die.");
         } else
-        this.feedbackMessage += "Hyperglycemia. My BGL is too high (> "+ this.configMaxSafeBGL+") not enough insulin! It causes damage to my player health\n";
+        this.feedbackMessages.push("USR MSG: Hyperglycemia. My BGL is too high (> "+ this.configMaxSafeBGL+") not enough insulin! It causes damage to my player health");
       }
     },
     clearFeedback: function(){
-      this.feedbackMessage = "";
+      this.feedbackMessages = [];
     }
   }
 });
