@@ -1,106 +1,198 @@
 <html>
 <head>
+
 <title>Insulin Engine (Test Harness)</title>
-<script
-type="text/javascript"
-src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.0.8/vue.min.js">
-</script>
+
+<link 
+  rel="stylesheet"
+  type="text/css"
+  href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+>
+<link href="https://fonts.googleapis.com/css?family=Bungee" rel="stylesheet">
+
+<script 
+  type="text/js"
+  src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+></script>
+
+<script 
+  type="text/javascript" 
+  src="vendor/js/vue.js"
+></script>
+
 <style type="text/css">
-.input-group {
-display:block;
-}
-em {
-  font-weight: bold;
-  font-style: normal;
-}
-.feedback-item {
-  display: block;
-  padding: 0.2em;
-  margin:0.2em;
-  margin-top:0.4em;
-  font-family: 'Droid-Sans-Mono', 'Courier';
-  font-size:12pt;
-  color:white;
-}
-.feedback-item:hover {
-  color: #00FF00;
-  background-color: #000;
-}
-#feedback {
-  max-height: 20em;
-  overflow-y: scroll;
-  background-color: #2a2a2a;
-}
+  #app-config .input-group {
+    margin: 0.3em;
+  }
+  .panel-default {
+    box-shadow: 3px 3px 11px #333;
+  }
+  #feedback {
+    background-color: #333;
+  }
+  .feedback-item {
+    color: #00FF00;
+  }
+
+  .feedback-item:hover {
+    color: lightgreen;
+    background-color: #000;
+  }
+  body {
+    background-color: #999;
+  }
+  #heart-nav {
+    background-image: url("vendor/img/Heart.svg");
+    background-repeat: repeat-x;
+    background-size: 1.5em 1.5em;
+    background-color: #333;
+    height: 4.5em;
+    color:white;
+    text-align: center;
+    border-bottom: 0.3em solid #eee;
+    box-shadow: 2px 2px 13px #000;
+    font-family: 'Bungee', cursive;
+  }
 </style>
 
 </head>
   <body>
-    <div id="vueroot" style="display: none">
-      <div id="app-container">
-        <div id="plrInsulinInfo">
-          <div id="plr-blood-glucose" style="display:block">
-            <em>Player Blood Glucose: </em>
-            {{bloodGlucose}}
-          </div>
-          <div id="plr-hearts-value" style="display: block;">
-            <em>Player hearts: </em>
-            {{playerHeartsValue}}/{{playerHeartsMax}}
-          </div>
-          <div id="plr-insulin" style="display: block;">
-            <em>Player Insulin: </em>
-            {{insulinUnitsInSystem}}
-          </div>
-          <div id="plr-carbs" style="display: block;">
-            <em>Player Carbs: </em>
-            {{carbsInSystem}}
+
+    <nav class="nav navbar-default navbar-fixed-top" id="heart-nav">
+      <h1>MCT1 INSULIN ENGINE</h1>
+    </nav>
+    <div id="vueroot" style="display: none;">
+      <!-- MAIN APP / LOGIC COMPONENT-->
+      <div class="single-root-container container" style="margin-top: 5em;">
+      <div class="row">
+        <div id="app-container" class="col-md-6">
+          <div id="player-insulin-info" class="panel panel-default">    
+            <!-- PLAYER INSULIN INFO BODY -->
+            <div class="panel-heading">
+              <h3>Player Stats</h3>
+            </div>
+            
+            <div class="panel-body">
+              <div id="plr-blood-glucose" class="">
+                <label>Player Blood Glucose: </label>
+                {{bloodGlucose}}
+              </div>
+              <div id="plr-hearts-value" style="display: block;">
+                <label>Player hearts: </label>
+                {{playerHeartsValue}}/{{playerHeartsMax}}
+              </div>
+              <div id="plr-insulin" style="display: block;">
+                <label>Player Insulin: </label>
+                {{insulinUnitsInSystem}}
+              </div>
+              <div id="plr-carbs" style="display: block;">
+                <label>Player Carbs: </label>
+                {{carbsInSystem}}
+              </div>
+            </div>
           </div>
         </div>
-
-        <hr />
         
-        <div id="plrInsulinControls">
-          
-          <em>Eat food</em>
-          <div class="input-group">
-            <select id="food-type" v-model.number="foodValue">
-              <option value="15" selected="true">Bread 15 carbs</option>
-              <option value="30">Watermelon 30 carbs</option>
-              <option value="45">Cookie 45 carbs</option>
-            </select>
-            <input 
-              type="number" id="food-units" 
-              value="1" min="1" max="5" 
-              step="1" v-model.number="foodUnits"
-            />
-            <button id="eat-food" v-on:click="eatFood">Eat</button>
+        <div class="col-md-6">        
+          <div id="plrInsulinControls" class="panel panel-default">
+            
+            <div class="panel-heading">
+              <h3>Insulin Controls</h3>
+            </div>
+            
+            <div class="panel-body">
+              <label>Choose food</label>  
+              <div class="input-group">
+                
+                <select class="form-control" id="food-type" v-model.number="foodValue">
+                  <option value="15">Bread 15 carbs</option>
+                  <option value="30">Watermelon 30 carbs</option>
+                  <option value="45">Cookie 45 carbs</option>
+                </select>
+                
+              </div>
+              <label>How many are you going to eat?</label>
+              <div class="input-group">
+                <input 
+                  type="number" id="food-units" 
+                  min="1" max="5" 
+                  step="1" v-model.number="foodUnits"
+                  class="form-control" 
+                />
+                <span class="input-group-btn">
+                  <button class="btn" id="eat-food" v-on:click="eatFood">Eat</button>
+                </span>
+              </div>
+              <label>Take Insulin</label>
+              <div class="input-group">
+                
+                <input class="form-control" type="number" v-model.number="insulinUnits" id="insulin-units"
+                min="0" max="100" step="1" />
+                <span class="input-group-btn">
+                  <button type="button" class="btn btn-secondary" id="take-insulin" v-on:click="takeInsulin">Take</button>
+                </span>
+              </div>
+            
+            </div>
           </div>
-
-          <hr />
-          
-          <em>Take Insulin</em>
-          <div class="input-group">
-            <input type="number" v-model.number="insulinUnits" id="insulin-units"
-            value="1" min="0" max="100" step="1" />
-            <button id="take-insulin" v-on:click="takeInsulin">Take</button>
-          </div>
-        
         </div>
-        <br />
-        <div id="feedback">
-          <div v-for="item in feedbackMessages" class="feedback-item">
-            $> {{item}}
+      </div>
+
+      
+      <div class="col-md-12">
+
+        <!-- FEEDBACK  COMPONENT -->
+        <div id="feedback" class="panel panel-default">
+          <div class="panel-heading">
+            <h3>Feedback</h3>
           </div>
-          <button id="feedback-clear" v-on:click="clearFeedback">
+          <div class="panel-body"> 
+          <div class="feedbackMessages">
+            <div v-for="item in feedbackMessages" class="feedback-item">
+              $> {{item}}
+            </div>
+          </div>
+          </div>
+           
+          
+          <div class="panel-footer">
+            <button class="btn" id="feedback-clear" v-on:click="clearFeedback">
             Clear feed back
-          </button>
-        </div> 
-        <hr />
-        <h3>App Config</h3>
-        <div id="app-config">
-          Player can eat <input type="number" name="carbs-reference-unit" size="5" maxlength="5" v-model="configCarbsReferenceUnit" /> for each 1 unit of insulin taken.<br />
-          Player can have a minimum safe BGL of <input type="number" size="5" maxlength="5" name="min-safe-bgl" v-model="configMinSafeBGL" /> bgl units. <br />
-          Player can have a maximum safe BGL of <input type="number" size="5" maxlength="5" name="max-safe-bgl" v-model="configMaxSafeBGL" /> bgl units
+            </button>
+          </div>
         </div>
+        
+        <!-- CONFIGURATION COMPONENT -->
+        <div id="app-config" class="panel panel-default">
+          
+          <div class="panel-heading">
+            <h3>App Config</h3>
+          </div>
+      
+          <div class="panel-body">
+            <div class="input-group">
+              <span class="input-group-addon">Player can eat</span> 
+              <input class="form-control" type="number" name="carbs-reference-unit" size="5" 
+              maxlength="5" v-model="configCarbsReferenceUnit" />
+              <span class="input-group-addon">grams (g) of carbs for each 1 unit of insulin taken</span>
+            </div>
+            
+            <div class="input-group">
+              <span class="input-group-addon">Player can have a minimum safe BGL of </span>
+              <input class="form-control" type="number" size="5" maxlength="5" name="min-safe-bgl" v-model="configMinSafeBGL" /><span class="input-group-addon">bgl units</span>
+            </div>
+
+            <div class="input-group">
+              <span class="input-group-addon">Player can have a maximum safe BGL of</span>
+              <input class="form-control" type="number" size="5" maxlength="5" name="max-safe-bgl" v-model="configMaxSafeBGL" />
+              <span class="input-group-addon">bgl units</span>
+            </div>
+
+          </div>
+        </div>
+
+    
+      </div>
       </div>
     </div>
     <div id="app">
