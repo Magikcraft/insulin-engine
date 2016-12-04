@@ -7,7 +7,7 @@ Pull Requests and feedback via Github issues are welcome!
 
 This engine integrates with a Minecraft plugin to provide a Virtual Reality experience of living with [Type 1 Diabetes](https://www.diabetesaustralia.com.au/type-1-diabetes) for newly diagnosed children and families to understand the interaction of carbs, insulin, and Blood Glucose Levels; to experience community with others living with the condition; and for their friends and communities to understand what they live with and how to support them.
 
-Project adviser [Scott Hanselman](http://www.hanselman.com/) is a software developer, Type 1 Diabetic, and activist. In this video Scott describes what it is like to like with Type 1 Diabetes:
+Project adviser [Scott Hanselman](http://www.hanselman.com/) is a software developer, Type 1 Diabetic, and activist. In this video Scott describes what it is like to live with Type 1 Diabetes:
 
 [![Scott Hanselman on Type 1 Diabetes](https://img.youtube.com/vi/jsxFbDIvQRw/0.jpg)](https://www.youtube.com/watch?v=jsxFbDIvQRw target="_blank")
 
