@@ -3,7 +3,7 @@ Naive implementation of insulin and blood glucose interaction, for educational p
 
 View the running engine implementation at https://magikcraft.github.io/insulin-engine/
 
-Pull Requests and feedback via Github issues are welcome!
+Pull Requests and feedback via Github issues are welcome! You can also discuss the project on the Magikcraft School of Magik Slack #mct1 channel. Join the Slack team via [this page](http://slack.magikcraft.io).
 
 This engine integrates with a Minecraft plugin to provide a Virtual Reality experience of living with [Type 1 Diabetes](https://www.diabetesaustralia.com.au/type-1-diabetes) for newly diagnosed children and families to understand the interaction of carbs, insulin, and Blood Glucose Levels; to experience community with others living with the condition; and for their friends and communities to understand what they live with and how to support them.
 
