@@ -1,18 +1,18 @@
 # insulin-engine
-Naive implementation of insulin and blood glucose interaction, for educational purposes.
 
-View the running engine implementation at https://magikcraft.github.io/insulin-engine/
+> simplified type 1 diabetes model of the human body for education
 
-Pull Requests and feedback via Github issues are welcome! You can also discuss the project on the Magikcraft School of Magik Slack #mct1 channel. Join the Slack team via [this page](http://slack.magikcraft.io).
+## Build Setup
 
-This engine integrates with a Minecraft plugin to provide a Virtual Reality experience of living with [Type 1 Diabetes](https://www.diabetesaustralia.com.au/type-1-diabetes) for newly diagnosed children and families to understand the interaction of carbs, insulin, and Blood Glucose Levels; to experience community with others living with the condition; and for their friends and communities to understand what they live with and how to support them.
+``` bash
+# install dependencies
+npm install
 
-Project adviser [Scott Hanselman](http://www.hanselman.com/) is a software developer, Type 1 Diabetic, and activist. In this video Scott describes what it is like to live with Type 1 Diabetes:
+# serve with hot reload at localhost:8080
+npm run dev
 
-[![Scott Hanselman on Type 1 Diabetes](https://img.youtube.com/vi/jsxFbDIvQRw/0.jpg)](https://www.youtube.com/watch?v=jsxFbDIvQRw target="_blank")
+# build for production with minification
+npm run build
+```
 
-If you are a parent of a child diagnosed with Type 1 Diabetes in Queensland, join the [TOPIQ (Type One Parents In Queensland) Facebook group](https://www.facebook.com/groups/TOPIQ/) for a supportive community.
-
-This project was initiated as a [Landmark Self-Expression and Leadership Program](http://www.landmarkworldwide.com/advanced-programs/self-expression-and-leadership-program) project using the structures and coaching of the program, and is empowered by developers from [Magikcraft](http://www.magikcraft.io), with the support of [Diabetes Queensland](http://www.diabetesqld.org.au/).
-
-For more information on Type 1 Diabetes initiatives by technology teams around the world, see the [#WeAreNotWaiting hashtag on Twitter](https://twitter.com/search?q=%23WeAreNotWaiting&src=typd).
+For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
